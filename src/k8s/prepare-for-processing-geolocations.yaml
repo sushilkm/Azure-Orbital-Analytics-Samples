@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "${JOB_NAME}"
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      volumes:
+        - name: "${VOLUME_NAME}"
+          persistentVolumeClaim:
+            claimName: "${PVC_CLAIM_NAME}"
+      containers:
+        - name: task-prepare-for-processing-geolocation
+          image: "${IMAGE_TRANSFORM_DOCKER_IMG}"
+          command:
+            - "./prepare-for-processing-geolocations.sh"
+            - "${MOUNT_POINT}"
+            - "${PROCESSING_DIR}"
+            - "${AIMODEL_OUTPUT_DIR}"
+            - "${GEOLOCATION_INPUT_DIR}"
+          volumeMounts:
+            - mountPath: "${MOUNT_POINT}"
+              name: "${VOLUME_NAME}"
+      restartPolicy: Never

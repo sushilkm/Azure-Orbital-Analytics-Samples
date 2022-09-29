@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "${JOB_NAME}"
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      volumes:
+        - name: "${VOLUME_NAME}"
+          persistentVolumeClaim:
+            claimName: "${PVC_CLAIM_NAME}"
+      containers:
+        - name: task-image-transform
+          image: "${IMAGE_TRANSFORM_DOCKER_IMG}"
+          command:
+            - "python3"
+            - "/custom-vision-transform.py" 
+            - "--mount_path"
+            - "${MOUNT_POINT}" 
+            - "--processing_dir"
+            - "${PROCESSING_DIR}"
+            - "--aoi"
+            - "${AOI_0}"
+            - "${AOI_1}"
+            - "${AOI_2}"
+            - "${AOI_3}"
+          volumeMounts:
+            - mountPath: "${MOUNT_POINT}"
+              name: "${VOLUME_NAME}"
+      restartPolicy: Never

@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "${JOB_NAME}"
+  labels:
+    AI_MODEL: custom-vision
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      volumes:
+        - name: "${VOLUME_NAME}"
+          persistentVolumeClaim:
+            claimName: "${PVC_CLAIM_NAME}"
+      containers:
+        - name: task-run-ai-model
+          image: "${AIMODEL_DOCKER_IMG}"
+          env:
+            - name: APP_INPUT_DIR
+              value: "${MOUNT_POINT}/${PROCESSING_DIR}/${AIMODEL_INPUT_DIR}"
+            - name: APP_OUTPUT_DIR
+              value: "${MOUNT_POINT}/${PROCESSING_DIR}/${AIMODEL_OUTPUT_DIR}"
+            - name: "APP_CONFIG_DIR"
+              value: "${MOUNT_POINT}/config/${AIMODEL_CONFIG_FILE}"
+          volumeMounts:
+            - mountPath: "${MOUNT_POINT}"
+              name: "${VOLUME_NAME}"
+      restartPolicy: Never

@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "${JOB_NAME}"
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      volumes:
+        - name: "${VOLUME_NAME}"
+          persistentVolumeClaim:
+            claimName: "${PVC_CLAIM_NAME}"
+      containers:
+        - name: task-geolocation-processor
+          image: "${GEOLOCATION_PROCESS_DOCKER_IMG}"
+          command:
+            - "python3"
+            - "/pool-geolocation.py"
+            - "--mount_path"
+            - "${MOUNT_POINT}"
+            - "--processing_dir"
+            - "${PROCESSING_DIR}"
+            - "--src_folder_name"
+            - "${GEOLOCATION_INPUT_DIR}"
+          volumeMounts:
+            - mountPath: "${MOUNT_POINT}"
+              name: "${VOLUME_NAME}"
+      restartPolicy: Never
