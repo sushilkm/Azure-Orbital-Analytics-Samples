@@ -1,0 +1,25 @@
+set -a
+APP_NAMESPACE=vision
+IMAGE_TRANSFORM_DOCKER_IMG="suskumaacr01.azurecr.io/image-processor:latest"
+AIMODEL_DOCKER_IMG="ghcr.io/azure/azure-orbital-analytics-samples/custom_vision_offline:latest"
+UNIQUE_ID="$(date '+%s')"
+PROCESSING_DIR="execution-${UNIQUE_ID}"
+AOI=(-117.063550 32.749467 -116.999386 32.812946)
+AOI_0="${AOI[0]}"
+AOI_1="${AOI[1]}"
+AOI_2="${AOI[2]}"
+AOI_3="${AOI[3]}"
+GEOLOCATION_PROCESS_DOCKER_IMG="suskumaacr01.azurecr.io/image-processor:latest"
+GEOLOCATION_INPUT_DIR="detections"
+AIMODEL_INPUT_DIR="in"
+AIMODEL_OUTPUT_DIR="out"
+AIMODEL_LOG_DIR="logs"
+AIMODEL_CONFIG_FILE="config.json"
+MOUNT_POINT="/data"
+VOLUME_NAME="image-volume"
+PVC_CLAIM_NAME="pvc-${VOLUME_NAME}"
+PV_NAME="pv-${VOLUME_NAME}"
+STORAGE_ACCOUNT_RG_NAME="suskuma-nifi-02"
+STORAGE_ACCOUNT_NAME="suskumateststr1"
+STORAGE_ACCOUNT_CONTAINER_NAME="custom-vision-model-v2"
+set +a

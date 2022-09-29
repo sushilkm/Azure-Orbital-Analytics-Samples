@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "${JOB_NAME}"
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      volumes:
+        - name: "${VOLUME_NAME}"
+          persistentVolumeClaim:
+            claimName: "${PVC_CLAIM_NAME}"
+      containers:
+        - name: task-prepare-for-ai-model
+          image: "${IMAGE_TRANSFORM_DOCKER_IMG}"
+          command:
+            - "./prepare-for-aimodel.sh"
+            - "${MOUNT_POINT}"
+            - "${PROCESSING_DIR}"
+            - "${AIMODEL_INPUT_DIR}"
+            - "${AIMODEL_OUTPUT_DIR}"
+            - "${AIMODEL_LOG_DIR}"
+          volumeMounts:
+            - mountPath: "${MOUNT_POINT}"
+              name: "${VOLUME_NAME}"
+      restartPolicy: Never
